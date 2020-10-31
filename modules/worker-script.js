@@ -23,7 +23,12 @@ parentPort.on('message', (data) => {        // data: workerMessage >> modules/ty
     if (_.isEmpty(namesObj)) {
         namesObj = workerData.namesObj
     }
-    let words = _.words(data.chunk) // this function get rid of punctuation and returns and array of words
+
+    // replace all punctuation with space
+    data.chunk = data.chunk.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g, ' ');
+
+    // extract an array of words
+    let words = _.words(data.chunk) 
 
     for (let word of words) {
         word = word.toLowerCase();
