@@ -1,7 +1,7 @@
 /*
  * ⚠️ We need to pass a js file as a worker script, since webpack does not compile it 
  *
- * As the worker is initiated, it is given an the starting state of namesObj
+ * As the worker is initiated, it is given a template of namesObj where all the values are 0
  * Since main thread and worker thread cannot refer to the same obj, every worker will keep track of their count
  * when done processing all data, they will inform the main thread
  * main will do the aggregation
@@ -25,14 +25,25 @@ parentPort.on('message', (data) => {        // data: WorkerMessage >> modules/ty
         namesObj = workerData.namesObj
     }
 
-    // replace all punctuation with space
+    // replace all punctuation with space & make lowercase
     data.chunk = data.chunk.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g, ' ');
+    data.chunk = data.chunk.toLowerCase();
 
-    // extract an array of words
-    let words = _.words(data.chunk)
+    // post the possible broken words [chunkCount, first element, last element]
+    let tempArr = data.chunk.split(' ');
+    parentPort.postMessage({ 
+        brokenWords: [
+            data.chunkCounter,                
+            tempArr[0], 
+            tempArr[tempArr.length - 1]
+        ] 
+    });
+
+    tempArr = []; // get rid of tempArr
+
+    let words = _.words(data.chunk)   // extracts an array of words
 
     for (let word of words) {
-        word = word.toLowerCase();
         if (namesObj[word] === 0 || namesObj[word]) {
             namesObj[word] += 1;
         }

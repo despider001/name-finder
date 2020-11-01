@@ -8,10 +8,8 @@ import { Status } from '../modules/types-inventory';
 export const getNameCount: Handler = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        // check if output is not found
         if (!fs.existsSync(fm.outputFile)) {
 
-            // status file is not found
             if (!fs.existsSync(fm.statusFile)) {
                 return res.status(404).json({ error: 'Ouput file not found! Make sure to generate the file first > /generate-output' });
             }

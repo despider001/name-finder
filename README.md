@@ -26,9 +26,9 @@ Here is a list of end points supported by the app.
 ```
 
 ## Some Important Improvements
-- [FIXED] `_.words()` may not extract the names exactly as we wanted, for example `john's` would be extracted as `johns`. To get optimal result, a module to clean up such punctuation has to be developed. That would increase the count precision.
+- *[fixed]* `_.words()` may not extract the names exactly as we wanted, for example `john's` would be extracted as `johns`. To get optimal result, a module to clean up such punctuation has to be developed. That would increase the count precision.
 
-- While streaming chunks, it can pass broken words, which may reduce the count precision. There is a way to stream lines, but that is very slow!
+- *[fixed]* While streaming chunks, it can pass broken words, which may reduce the count precision. There is a way to stream lines, but that is very slow!
 
 - `threadCount` is set to `3` x `number of cores`. But this requires a lot more experiments to come up with an optimal number
  
