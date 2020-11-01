@@ -1,8 +1,12 @@
 import * as fs from 'fs';
 import * as readline from 'readline';
-import { nameCount } from './types-inventory';
+import { NameCount } from './types-inventory';
 
-const readNames = (name: string, filePath): Promise<nameCount> => new Promise((resolve, reject) => {
+const readNames = (name: string, filePath): Promise<NameCount> => new Promise((resolve, reject) => {
+
+    if(!fs.existsSync(filePath)) {
+        reject('Target file not found!');
+    }
 
     // read the file line by line and update the map
     const rl = readline.createInterface({

@@ -7,13 +7,16 @@ import { Status } from './types-inventory';
 import { createWorker } from './create-worker';
 import * as os from 'os';
 
-const threadCount = os.cpus().length * 3;                 // number of threads, could be dynamically generated based on number of core
+const threadCount = os.cpus().length * 3;  // number of threads, could be dynamically generated based on number of core
 const workersArr: Worker[] = []
-let currentThread = 0;                  // to keep track of the worker that should receive the task
+let currentThread = 0;                     // to keep track of the worker that should receive the task
 
+/**
+ * @description An async function that initiate the scanning of ebook
+ * @returns false if something goes wrong
+ */
 
-
-const countNames = async () => {
+const countNames = async (): Promise<boolean | null> => {
 
     // handle no files
     if (!fs.existsSync(fm.namesFile) || !fs.existsSync(fm.ebookFile)) {
@@ -29,7 +32,7 @@ const countNames = async () => {
 
     console.log('Started...');
 
-    // update the process before start reading
+    // update the status before start reading
     fs.writeFileSync(fm.statusFile, <Status>'on progress');
 
     // read the first names
@@ -40,7 +43,6 @@ const countNames = async () => {
         workersArr.push(createWorker(namesObj));
     }
 
-    // create read stream
     let stream = fs.createReadStream(fm.ebookFile, { encoding: 'utf-8' });
 
     // as chunks are received, destribute them to worker

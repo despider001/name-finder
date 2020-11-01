@@ -1,4 +1,4 @@
-export type nameCount = {
+export type NameCount = {
     name: string
     count: number
 }
@@ -7,10 +7,10 @@ export type NamesObj = {
     [name: string]: number
 }
 
-export type workerMessage = {
+export type WorkerMessage = {
     namesObj?: NamesObj
     left?: number
 
 }
 
-export type Status = 'on progress' | 'done' | 'not found' | 'error';
+export type Status = 'on progress' | 'done';

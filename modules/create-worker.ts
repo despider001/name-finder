@@ -1,5 +1,5 @@
 import * as path from "path";
-import { NamesObj, workerMessage } from "./types-inventory";
+import { NamesObj, WorkerMessage } from "./types-inventory";
 import { Worker } from 'worker_threads';
 import { fileMapper as fm } from './file-mapper';
 import * as fs from 'fs';
@@ -20,13 +20,14 @@ export const createWorker = (namesObj: NamesObj): Worker => {
     });
 
     // handler to deal with messages from worker
-    worker.on('message', (data: workerMessage) => {
+    worker.on('message', (data: WorkerMessage) => {
         if (!data.namesObj) return;
 
         for (let name in namesObj) {
             namesObj[name] += data.namesObj[name] ? data.namesObj[name] : 0;
         }
 
+        // data.left === 0 indicates if the worker has submitted its work
         if (data.left === 0) {
 
             // sort the count in a desc order 
@@ -37,8 +38,9 @@ export const createWorker = (namesObj: NamesObj): Worker => {
             nameCountArr.sort((a, b) => b[1] - a[1]);
 
 
-            fs.unlinkSync(fm.outputFile); // remove the output file before appending
-
+            // remove the output file before appending
+            fs.existsSync(fm.outputFile) && fs.unlinkSync(fm.outputFile); 
+            
             // loop though the array and append them to output (synchronously, not to mix order)
             for (let item of nameCountArr) {
                 fs.appendFileSync(fm.outputFile, `${_.capitalize(item[0])}: ${item[1]}\r\n`);
